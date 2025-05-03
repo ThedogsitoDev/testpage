@@ -2,222 +2,68 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ahorro Meta</title>
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
-        
-        body {
-            font-family: 'Sour Gummy', cursive;
-            background-color: #333;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-        }
-        
-        .container {
-            text-align: center;
-            width: 90%;
-            max-width: 800px;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-
-        .barra-container {
-            position: relative;
-            width: 100%;
-            height: 30px;
-            background: #555;
-            border-radius: 15px;
-            margin-top: 20px;
-            overflow: hidden;
-        }
-
-        .barra {
-            height: 100%;
-            background-color: #00BFFF;
-            width: 0;
-            border-radius: 15px;
-            transition: width 1s ease-in-out;
-        }
-
-        .monto {
-            font-size: 1.5rem;
-            margin-top: 20px;
-        }
-
-        .boton {
-            padding: 10px 20px;
-            background-color: #00BFFF;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-top: 30px;
-            font-size: 1.2rem;
-            transition: background-color 0.3s;
-        }
-
-        .boton:hover {
-            background-color: #009ACD;
-        }
-
-        .input-container {
-            margin-top: 20px;
-        }
-
-        input {
-            padding: 10px;
-            font-size: 1.2rem;
-            border-radius: 10px;
-            border: 2px solid #00BFFF;
-            margin-right: 10px;
-        }
-
-        .historial {
-            margin-top: 30px;
-            padding: 10px;
-            background-color: #444;
-            border-radius: 10px;
-            text-align: left;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .historial div {
-            margin-bottom: 10px;
-        }
-
-        .meta {
-            font-size: 1.5rem;
-            margin-top: 30px;
-            font-weight: bold;
-        }
-
-        .historial-title {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-        }
-
-        /* Responsiveness */
-        @media (max-width: 600px) {
-            .container {
-                width: 100%;
-                padding: 10px;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .barra-container {
-                height: 20px;
-            }
-
-            .monto {
-                font-size: 1.2rem;
-            }
-
-            .boton, input {
-                font-size: 1rem;
-            }
-
-            .meta {
-                font-size: 1.2rem;
-            }
-
-            .historial {
-                max-height: 150px;
-            }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            display: none;
         }
     </style>
 </head>
 <body>
+    <div class="wrapper">
+        <h1>Login</h1>
 
-    <div class="container">
-        <h1>Ahorra para tu Meta</h1>
+        <form class="login-form" onsubmit="return validateLogin(event)">
+            <div class="input-container">
+                <input type="text" id="username" placeholder=" " required>
+                <label for="username">User</label>
+            </div>
+            <div class="input-container">
+                <input type="password" id="password" placeholder=" " required>
+                <label for="password">Password</label>
+            </div>
+
+            <a href="#" class="forgot-password">Forgot password?</a>
+
+            <button type="submit" class="login-btn">Enter</button>
+            <div id="error-message" class="error-message">Usuario o contraseña incorrectos.</div>
+        </form>
         
-        <!-- Barra de progreso -->
-        <div class="barra-container">
-            <div id="barra" class="barra"></div>
-        </div>
+        <div class="social-icons">
+            <a href="#" class="social-icon google">
+                <i class="fab fa-google"></i>
+            </a>
+            
+            <a href="#" class="social-icon twitch">
+                <i class="fab fa-twitch"></i>
+            </a>
 
-        <div class="monto" id="montoAhorrado">Cargando...</div>
-
-        <!-- Meta -->
-        <div class="meta" id="meta">Meta: $850,000 - Ahorro: $20,000</div>
-
-        <!-- Formulario para añadir monto -->
-        <div class="input-container">
-            <input type="number" id="montoInput" placeholder="¿Cuánto deseas ahorrar?">
-            <button class="boton" onclick="añadirCantidad()">Añadir</button>
-        </div>
-
-        <!-- Historial de ahorros -->
-        <div class="historial-title">Historial:</div>
-        <div id="historial" class="historial"></div>
+            <a href="#" class="social-icon apple">
+                <i class="fab fa-apple"></i>
+            </a>
+        </div>        
     </div>
 
     <script>
-        let ahorrado = 20000; // Cargar desde el archivo YAML
-        const meta = 850000;
-        let historial = [
-            { cantidad: 10000, fecha: "2025-05-03T12:00:00" }
-        ];
+        function validateLogin(event) {
+            event.preventDefault(); // Evita que se recargue el formulario
 
-        function actualizarBarra() {
-            const porcentaje = (ahorrado / meta) * 100;
-            document.getElementById("barra").style.width = porcentaje + "%";
-            document.getElementById("montoAhorrado").textContent = `Ahorro: $${ahorrado.toLocaleString()}`;
-            document.getElementById("meta").textContent = `Meta: $${meta.toLocaleString()} - Ahorro: $${ahorrado.toLocaleString()}`;
-        }
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const errorMsg = document.getElementById("error-message");
 
-        function cargarAhorro() {
-            setTimeout(() => {
-                actualizarBarra();
-            }, 500);
-        }
-
-        function añadirCantidad() {
-            const montoInput = document.getElementById("montoInput");
-            const monto = parseInt(montoInput.value);
-
-            if (isNaN(monto) || monto <= 0) {
-                alert("Por favor ingresa un monto válido.");
-                return;
+            if (username === "Thedogsito" && password === "._Thedogsito__.") {
+                window.location.href = "ahorros.html";
+            } else {
+                errorMsg.style.display = "block";
             }
 
-            ahorrado += monto;
-            historial.push({ cantidad: monto, fecha: new Date().toLocaleString() });
-
-            actualizarBarra();
-            renderizarHistorial();
-
-            montoInput.value = "";
+            return false;
         }
-
-        function renderizarHistorial() {
-            const historialDiv = document.getElementById("historial");
-            historialDiv.innerHTML = "";
-            historial.forEach(entry => {
-                const div = document.createElement("div");
-                div.textContent = `+${entry.cantidad.toLocaleString()} - ${entry.fecha}`;
-                div.style.color = "green";
-                historialDiv.appendChild(div);
-            });
-        }
-
-        window.onload = cargarAhorro;
-
     </script>
-
 </body>
 </html>
