@@ -1,0 +1,6 @@
+ahorros:
+  meta: 850000
+  ahorrado: 20000
+  historial:
+    - cantidad: 10000
+      fecha: "2025-05-03T12:00:00"
