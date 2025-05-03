@@ -1,0 +1,259 @@
+@import url('https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Sour Gummy', sans-serif;
+}
+body {
+    animation: body-illumination 2s ease-in-out forwards;
+}
+
+@keyframes body-illumination {
+    0% {
+        background-color: #505050;
+    }
+    100% {
+        background-color: #070707;
+    }
+}
+
+body {
+    height: 100vh;
+    background-color: #070707;
+    background-size: cover;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.wrapper {
+    max-width: 500px;
+    min-width: 350px;
+    height: 500px;
+    background-color: #111111;
+    border-radius: 5px;
+    margin: 30px;
+    position: relative;
+}
+
+@keyframes explosion {
+    0% {
+        filter: blur(10px);
+        opacity: 1;
+    }
+    50% {
+        filter: blur(36px);
+        opacity: 1;
+    }
+    75% {
+        filter: blur(35px);
+        opacity: 1;
+    }
+}
+
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.wrapper::after,
+.wrapper::before {
+    top: 0;
+    left: 0;
+    content: "";
+    background: conic-gradient(from var(--angle), #00ffd5, #2f00ff, rgb(0, 153, 255), #00ffd5);
+    width: 98%;
+    height: 98%;
+    position: absolute;
+    z-index: -1;
+    padding: 3px;
+    border-radius: 5px;
+    animation: rotate 4s linear infinite, explosion 2s ease-in-out alternate;
+}
+
+.wrapper::before {
+    filter: blur(35px);
+    opacity: 1;
+}
+
+@keyframes rotate {
+    0% {
+        --angle: 0deg;
+    }
+    100% {
+        --angle: 360deg;
+    }
+}
+
+h1 {
+    text-align: center;
+    font-size: calc(1.5em + 1vw);
+    font-weight: bold;
+    margin-top: 30px;
+    color: #ffffff;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: flex-start; /* Alineado a la izquierda */
+    gap: 65px;
+    position: absolute;
+    bottom: 20px; /* Alineación en la parte de abajo */
+    left: 40px; /* Ajustamos un poco la distancia desde la izquierda */
+    padding: 10px 0; /* Mantenemos el padding consistente con otros componentes */
+}
+
+.social-icon i {
+    font-size: 30px;
+    color: white; /* Los íconos son blancos por defecto */
+    transition: transform 0.3s ease, color 0.3s ease;
+    padding: 10px; /* Consistencia con el padding de otros componentes */
+    border-radius: 50%; /* Opcional: Para darles una forma redondeada */
+}
+
+.social-icon.google i {
+    color: white;
+}
+
+.social-icon.twitch i {
+    color: white;
+}
+
+.social-icon.apple i {
+    color: white;
+}
+
+.social-icon.google:hover i {
+    transform: translateY(-5px);
+    color: #ff3535;
+}
+
+.social-icon.twitch:hover i {
+    transform: translateY(-5px);
+    color: #7b0086;
+}
+
+.social-icon:hover i {
+    transform: translateY(-5px); 
+    color: #ffffff; 
+}
+
+.forgot-register {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.login-form {
+    padding: 0 40px;
+    margin-top: 40px; /* Aquí agregamos el margen superior */
+}
+
+.input-container {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+input {
+    height: 40px;
+    width: 100%;
+    border-radius: 0;
+    outline: none;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: transparent;
+    color: white;
+    border: none;
+    border-bottom: 2px solid #888;
+    transition: all 0.3s ease-in-out;
+}
+
+input:focus {
+    border-bottom: 2px solid white;
+}
+
+input:focus + label,
+input:not(:placeholder-shown) + label {
+    font-size: 14px;
+    color: #00ffd5;
+    top: -10px;
+}
+
+label {
+    position: absolute;
+    left: 10px;
+    top: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+}
+
+.forgot-password {
+    font-size: 14px;
+    font-weight: bold;
+    color: #00ffd5;
+    text-decoration: none;
+    margin-top: 10px;
+    display: block;
+    text-align: left;
+}
+
+.forgot-password:hover {
+    color: white;
+}
+
+.login-btn {
+    margin-top: 20px;
+    padding: 10px;
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #00ffd5;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-btn:hover {
+    background-color: #00b0a7;
+}
+
+.forgot-register {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.register-btn {
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+    width: fit-content;
+}
+
+.register-btn:hover {
+    color: #00ffd5;
+}
+
+.loginl-btn {
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+    width: fit-content;
+}
+
+.loginl-btn:hover {
+    color: #00ffd5;
+}

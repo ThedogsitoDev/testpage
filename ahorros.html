@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meta de Ahorro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Sour Gummy', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #1e1e1e;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      gap: 40px;
+      font-size: 16px;
+    }
+
+    .progress-container {
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .label {
+      margin-top: 15px;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+
+    .sub-label {
+      margin-top: 5px;
+      color: #ccc;
+      font-size: 1.1em;
+    }
+
+    .input-group {
+      margin-top: 25px;
+    }
+
+    input[type="number"] {
+      padding: 10px;
+      width: 160px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 1em;
+      margin-right: 10px;
+    }
+
+    .add-button {
+      background-color: #00c8ff;
+      color: #1e1e1e;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+    }
+
+    .add-button:hover {
+      transform: scale(1.05);
+      background-color: #00e0ff;
+    }
+
+    .reset-button {
+      background-color: #ff4c4c;
+      color: #1e1e1e;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1em;
+      margin-top: 20px;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+    }
+
+    .reset-button:hover {
+      transform: scale(1.05);
+      background-color: #ff6666;
+    }
+
+    svg {
+      filter: none;
+    }
+
+    .progress-container svg path {
+      transition: stroke 0.4s ease;
+    }
+
+    .history-container {
+      width: 100%;
+      max-width: 300px;
+      background-color: #2a2a2a;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 10px #00000066;
+      overflow-y: auto;
+      margin-top: 20px;
+      max-height: 50%;
+      color: #baffc9;
+    }
+
+    .history-title {
+      font-size: 1.2em;
+      color: #00c8ff;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .history-list {
+      color: #baffc9;
+      font-size: 0.95em;
+    }
+
+    .history-item {
+      margin-bottom: 8px;
+    }
+
+    .history-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .history-container::-webkit-scrollbar-thumb {
+      background-color: #00c8ff;
+      border-radius: 4px;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      50% { transform: translateX(10px); }
+      75% { transform: translateX(-10px); }
+      100% { transform: translateX(0); }
+    }
+
+    @media (min-width: 768px) {
+      .progress-container {
+        margin-bottom: 80px; /* Espacio para que el historial no se sobreponga */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra de progreso y controles -->
+  <div class="progress-container">
+    <svg width="300" height="150" viewBox="0 0 300 150">
+      <!-- Fondo -->
+      <path
+        d="M 20 150 A 130 130 0 0 1 280 150"
+        stroke="#444"
+        stroke-width="20"
+        fill="none"
+        stroke-linecap="round"
+      />
+      <!-- Progreso -->
+      <path
+        id="progressArc"
+        d="M 20 150 A 130 130 0 0 1 280 150"
+        stroke="#00c8ff"
+        stroke-width="20"
+        fill="none"
+        stroke-dasharray="407"
+        stroke-dashoffset="407"
+        stroke-linecap="round"
+      />
+    </svg>
+
+    <div class="label">iPhone 15 Pro - <span id="porcentajeTexto">0%</span></div>
+    <div class="sub-label">850.000 - <span id="ahorradoTexto">0</span></div>
+
+    <div class="input-group">
+      <input type="number" id="montoInput" placeholder="Monto a añadir" min="1">
+      <button class="add-button" onclick="añadirCantidad()">Añadir</button>
+    </div>
+  </div>
+
+  <!-- Historial de ahorros -->
+  <div class="history-container">
+    <div class="history-title">Historial:</div>
+    <div class="history-list" id="historial"></div>
+    <button class="reset-button" onclick="borrarHistorial()">Borrar Historial</button>
+  </div>
+
+  <script>
+    const meta = 850000;
+    const totalLength = 407;
+    let ahorrado = parseInt(localStorage.getItem("ahorrado")) || 0;
+    let historial = JSON.parse(localStorage.getItem("historial")) || [];
+
+    const arc = document.getElementById("progressArc");
+    const porcentajeTexto = document.getElementById("porcentajeTexto");
+    const ahorradoTexto = document.getElementById("ahorradoTexto");
+    const historialDiv = document.getElementById("historial");
+    const montoInput = document.getElementById("montoInput");
+
+    function actualizarBarra() {
+      const porcentaje = Math.min((ahorrado / meta) * 100, 100).toFixed(1);
+      const offset = totalLength - (totalLength * porcentaje / 100);
+
+      porcentajeTexto.textContent = `${porcentaje}%`;
+      ahorradoTexto.textContent = ahorrado.toLocaleString();
+
+      // Animación de progreso
+      const animarProgreso = () => {
+        let progress = 0;
+        const interval = setInterval(() => {
+          if (progress >= porcentaje) {
+            clearInterval(interval);
+          } else {
+            progress += 0.1;
+            arc.style.strokeDashoffset = totalLength - (totalLength * progress / 100);
+          }
+        }, 10);
+      };
+
+      animarProgreso();
+    }
+
+    function añadirCantidad() {
+      const valor = parseInt(montoInput.value);
+      if (!valor || valor <= 0) return alert("Ingresá un monto válido.");
+
+      ahorrado += valor;
+      historial.push({ cantidad: valor, fecha: new Date().toLocaleString() });
+      localStorage.setItem("ahorrado", ahorrado);
+      localStorage.setItem("historial", JSON.stringify(historial));
+      actualizarBarra();
+      renderizarHistorial();
+      montoInput.value = "";
+
+      // Sonido de "Minecraft XP"
+      const audio = new Audio('Img/Minecraft XP notificaton sound ｜ Tono de notificacion experiencia minecraft.mp3');
+      audio.play();
+
+      // Vibración visual
+      vibrarPagina();
+    }
+
+    function vibrarPagina() {
+      document.body.style.animation = 'shake 0.5s ease-in-out';
+      setTimeout(() => {
+        document.body.style.animation = ''; // Resetea la animación
+      }, 500);
+    }
+
+    function renderizarHistorial() {
+      historialDiv.innerHTML = "";
+      historial.slice().reverse().forEach(item => {
+        const div = document.createElement("div");
+        div.classList.add("history-item");
+        div.innerHTML = `+${item.cantidad.toLocaleString()} <span style="color:#777;font-size:0.85em;">(${item.fecha})</span>`;
+        historialDiv.appendChild(div);
+      });
+    }
+
+    function borrarHistorial() {
+      localStorage.removeItem("ahorrado");
+      localStorage.removeItem("historial");
+      ahorrado = 0;
+      historial = [];
+      actualizarBarra();
+      renderizarHistorial();
+    }
+
+    // Inicialización
+    actualizarBarra();
+    renderizarHistorial();
+  </script>
+</body>
+</html>
